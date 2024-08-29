@@ -1,18 +1,18 @@
 package app;
 
-import db.DBtest;
-import entities.Pessoa;
+import app.UI.Menu;
+import model.entities.Estacionamento;
+import model.entities.Veiculo;
+
+import java.util.List;
+import java.util.Scanner;
 
 public class Program {
     public static void main(String[] args) {
 
-        DBtest.getConnection();
+        Scanner sc = new Scanner(System.in);
 
-        Pessoa p = new Pessoa(null, "Pedro");
-        //DBtest.insert(p);
-        System.out.println("Pronto!");
+        Menu.mostrarMenu(sc);
 
-        p = DBtest.findById(9);
-        System.out.println(p);
     }
 }
