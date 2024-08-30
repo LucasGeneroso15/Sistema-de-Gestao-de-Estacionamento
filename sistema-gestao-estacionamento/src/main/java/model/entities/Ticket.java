@@ -17,6 +17,8 @@ public class Ticket implements Serializable {
     private Integer vagaEscolhida;
     private Double valorPago;
 
+    private static DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
     public Ticket(){
     }
 
@@ -108,13 +110,13 @@ public class Ticket implements Serializable {
     @Override
     public String toString() {
         return "TICKET {" +
-                "id=" + id +
-                ", horaEntrada=" + horaEntrada +
-                ", horaSaida=" + horaSaida +
-                ", cancelaEntrada=" + cancelaEntrada +
-                ", cancelaSaida=" + cancelaSaida +
-                ", vagaEscolhida=" + vagaEscolhida +
-                ", valorPago=" + valorPago +
+                "id = " + id +
+                ", hora Entrada = " + (horaEntrada != null ? horaEntrada.format(fmt) : "N/A") +
+                ", hora Saida = " + (horaSaida != null ? horaSaida.format(fmt) : "N/A") +
+                ", cancela Entrada =" + cancelaEntrada +
+                ", cancela Saida =" + cancelaSaida +
+                ", vaga Ocupada = " + vagaEscolhida +
+                ", valor Pago=" + valorPago +
                 '}';
     }
 }

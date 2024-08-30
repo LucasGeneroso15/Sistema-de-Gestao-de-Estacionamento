@@ -8,6 +8,7 @@ public interface VeiculoDao {
     void insert(Veiculo obj);
     void update(Veiculo obj);
     void deleteById(Integer id);
-    Veiculo findByPlace(String placa);
+    Veiculo procurarPlacaMensalista(String placa);
+    Veiculo procurarPlacaCaminhao(String placa);
     List<Veiculo> findAll();
 }

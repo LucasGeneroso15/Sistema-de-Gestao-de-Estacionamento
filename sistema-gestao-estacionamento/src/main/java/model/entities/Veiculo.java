@@ -90,12 +90,12 @@ public class Veiculo implements Serializable {
 
     @Override
     public String toString() {
-        return "Veiculo{" +
-                "idVeiculo=" + idVeiculo +
-                ", placa='" + placa + '\'' +
-                ", tipo='" + tipo + '\'' +
-                ", categoriaVeiculo=" + categoriaVeiculo +
-                ", tamanhoVaga=" + tamanhoVaga +
+        return "Veiculo {" +
+                "idVeiculo = " + idVeiculo +
+                ", placa = '" + placa + '\'' +
+                ", tipo = '" + tipo + '\'' +
+                ", categoriaVeiculo = " + categoriaVeiculo +
+                ", tamanhoVaga = " + tamanhoVaga +
                 '}';
     }
 }

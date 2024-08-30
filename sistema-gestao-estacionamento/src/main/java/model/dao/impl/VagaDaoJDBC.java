@@ -146,6 +146,46 @@ public class VagaDaoJDBC implements VagaDao {
     }
 
     @Override
+    public List<Integer> vagasDisponiveisCadastrados(Integer tamanhoVaga) {
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        List<Integer> vagas = new ArrayList<>();
+        try {
+            st = conn.prepareStatement(
+                    "SELECT numero_vaga FROM vagas " +
+                            "WHERE reservada = TRUE AND status = TRUE " +
+                            "ORDER BY numero_vaga ASC");
+            rs = st.executeQuery();
+
+            int count = 0;
+            int lastNumeroVaga = -1;
+
+            while (rs.next()) {
+
+                int numeroVaga = rs.getInt("numero_vaga");
+
+                if (lastNumeroVaga == -1 || numeroVaga == lastNumeroVaga + 1) {
+                    vagas.add(numeroVaga);
+                    count++;
+                    if (count == tamanhoVaga) {
+                        break;
+                    }
+                } else {
+                    vagas.clear();
+                    count = 0;
+                }
+                lastNumeroVaga = numeroVaga;
+            }
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        } finally {
+            DB.closeResultSet(rs);
+            DB.closeStatement(st);
+        }
+        return vagas;
+    }
+
+    @Override
     public void updateVagas(List<Integer> numerosVagas, Boolean reservada, Boolean status) {
         PreparedStatement st = null;
         try {

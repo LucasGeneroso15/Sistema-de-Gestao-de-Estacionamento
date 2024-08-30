@@ -63,8 +63,65 @@ public class VeiculoDaoJDBC implements VeiculoDao {
     }
 
     @Override
-    public Veiculo findByPlace(String placa) {
-        return null;
+    public Veiculo procurarPlacaMensalista(String placa) {
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        try {
+            st = conn.prepareStatement(
+                    "SELECT * FROM veiculos_cadastrados " +
+                        "WHERE LOWER(placa) = LOWER(?) AND categoria = 'MENSALISTA'");
+
+            st.setString(1, placa);
+            rs = st.executeQuery();
+
+            if (rs.next()) {
+                return new Veiculo(
+                        rs.getInt("id_veiculo"),
+                        rs.getString("placa"),
+                        rs.getString("tipo"),
+                        rs.getString("categoria"),
+                        rs.getInt("tamanho_vaga")
+                );
+            } else {
+                return null;
+            }
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        } finally {
+            DB.closeResultSet(rs);
+            DB.closeStatement(st);
+        }
+    }
+
+    @Override
+    public Veiculo procurarPlacaCaminhao(String placa) {
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        try {
+            st = conn.prepareStatement(
+                    "SELECT * FROM veiculos_cadastrados " +
+                            "WHERE LOWER(placa) = LOWER(?) AND categoria = 'CAMINHAO_ENTREGA'");
+
+            st.setString(1, placa);
+            rs = st.executeQuery();
+
+            if (rs.next()) {
+                return new Veiculo(
+                        rs.getInt("id_veiculo"),
+                        rs.getString("placa"),
+                        rs.getString("tipo"),
+                        rs.getString("categoria"),
+                        rs.getInt("tamanho_vaga")
+                );
+            } else {
+                return null;
+            }
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        } finally {
+            DB.closeResultSet(rs);
+            DB.closeStatement(st);
+        }
     }
 
     @Override
