@@ -5,9 +5,10 @@ import model.entities.Vaga;
 import java.util.List;
 
 public interface VagaDao {
-    void insert(Vaga obj);
+    void insert(Vaga obj, Integer tamanhoVaga);
     void update(Vaga obj);
     void deleteById(Integer id);
-    Vaga findByNumber(Integer numVaga);
+    List<Integer> vagasDisponiveis(Integer tamanhoVaga);
+    void updateVagas(List<Integer> numerosVagas, Boolean reservada, Boolean status);
     List<Vaga> findAll();
 }

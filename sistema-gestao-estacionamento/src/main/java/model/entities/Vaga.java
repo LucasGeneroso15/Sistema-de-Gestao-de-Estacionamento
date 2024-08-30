@@ -6,19 +6,17 @@ import java.util.Objects;
 public class Vaga implements Serializable {
     private Integer idVaga;
     private Integer numeroVaga;
-    private Boolean isMensalista;
-    private String placaVeiculo;
-    private Integer idTicket;
+    private Boolean reservada;
+    private Boolean status;
 
-    public Vaga(){
+    public Vaga() {
     }
 
-    public Vaga(Integer idVaga, Integer numeroVaga, Boolean isMensalista, String placaVeiculo, Integer idTicket) {
+    public Vaga(Integer idVaga, Integer numeroVaga, Boolean reservada, Boolean status) {
         this.idVaga = idVaga;
         this.numeroVaga = numeroVaga;
-        this.isMensalista = isMensalista;
-        this.placaVeiculo = placaVeiculo;
-        this.idTicket = idTicket;
+        this.reservada = reservada;
+        this.status = status;
     }
 
     public Integer getIdVaga() {
@@ -37,28 +35,20 @@ public class Vaga implements Serializable {
         this.numeroVaga = numeroVaga;
     }
 
-    public Boolean getMensalista() {
-        return isMensalista;
+    public Boolean getReservada() {
+        return reservada;
     }
 
-    public void setMensalista(Boolean mensalista) {
-        isMensalista = mensalista;
+    public void setReservada(Boolean reservada) {
+        this.reservada = reservada;
     }
 
-    public String getPlacaVeiculo() {
-        return placaVeiculo;
+    public Boolean getStatus() {
+        return status;
     }
 
-    public void setPlacaVeiculo(String placaVeiculo) {
-        this.placaVeiculo = placaVeiculo;
-    }
-
-    public Integer getIdTicket() {
-        return idTicket;
-    }
-
-    public void setIdTicket(Integer idTicket) {
-        this.idTicket = idTicket;
+    public void setStatus(Boolean status) {
+        this.status = status;
     }
 
     @Override
@@ -66,12 +56,12 @@ public class Vaga implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Vaga vaga = (Vaga) o;
-        return idVaga == vaga.idVaga && numeroVaga == vaga.numeroVaga && Objects.equals(placaVeiculo, vaga.placaVeiculo);
+        return Objects.equals(idVaga, vaga.idVaga) && Objects.equals(numeroVaga, vaga.numeroVaga) && Objects.equals(reservada, vaga.reservada) && Objects.equals(status, vaga.status);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idVaga, numeroVaga, placaVeiculo);
+        return Objects.hash(idVaga, numeroVaga, reservada, status);
     }
 
     @Override
@@ -79,9 +69,8 @@ public class Vaga implements Serializable {
         return "Vaga{" +
                 "idVaga=" + idVaga +
                 ", numeroVaga=" + numeroVaga +
-                ", isMensalista=" + isMensalista +
-                ", placaVeiculo='" + placaVeiculo + '\'' +
-                ", idTicket=" + idTicket +
+                ", reservada=" + reservada +
+                ", status=" + status +
                 '}';
     }
 }

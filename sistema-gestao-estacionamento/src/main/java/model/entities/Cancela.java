@@ -1,13 +1,20 @@
 package model.entities;
 
-import model.entities.enums.CategoriaVeiculo;
+import model.dao.DaoFactory;
+import model.dao.TicketDao;
+import model.dao.VagaDao;
+import model.dao.VeiculoDao;
 import model.exception.CancelaException;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class Cancela {
     private int numero;
+    static VagaDao vagaDao = DaoFactory.createVagaDao();
+    static VeiculoDao veiculoDao = DaoFactory.createVeiculoDao();
+    static TicketDao ticketDao = DaoFactory.createTicketDao();
+
 
     public Cancela(int numero) {
         this.numero = numero;
@@ -28,6 +35,7 @@ public class Cancela {
         System.out.println("\nCATEGORIAS DE VEÍCULO: 1 - AVULSO, 2 - MENSALISTA, 3 - CAMINHAO DE ENTREGA, 4 - SERVICO PUBLICO");
         System.out.print("Entre com a categoria do veículo ( 1 - 4 ): ");
         int categoria;
+
         try {
             categoria = sc.nextInt();
             if (categoria < 1 || categoria > 4) {
@@ -48,17 +56,43 @@ public class Cancela {
                     System.out.print("Entre com a placa do veículo: ");
                     String placa = sc.nextLine();
 
-                    Estacionamento estacionamento = new Estacionamento();
+                    int tamanhoVaga = tipoVeiculo.equalsIgnoreCase("moto") ? 1 : 2;
+                    List<Integer> vagasDisponiveis = vagaDao.vagasDisponiveis(tamanhoVaga);
+                    Ticket novoTicket;
 
-                    if(!tipoVeiculo.equalsIgnoreCase("moto")){
+                    if (vagasDisponiveis.size() < tamanhoVaga) {
+                        System.out.println("Nenhuma vaga disponível.");
+                    } else {
+                        List<Integer> atualizarVagas = vagasDisponiveis.subList(0, tamanhoVaga);
+                        vagaDao.updateVagas(atualizarVagas, false, false); // Marcar como ocupada
 
-                    }else{
+                        int numeroVaga = atualizarVagas.get(0);
 
+                        novoTicket = new Ticket(null, placa, LocalDateTime.now(), numero, numeroVaga);
+                        ticketDao.novoTicket(novoTicket);
+                        veiculoDao.insert(new Veiculo(null, placa, tipoVeiculo, categoriaVeiculo, tamanhoVaga));
+
+                        System.out.println("Ticket gerado com sucesso: " + novoTicket);
                     }
+                }
+            } else if (categoriaVeiculo.equalsIgnoreCase("MENSALISTA")){
+                System.out.println();
+                System.out.println("\n****************************");
+                System.out.print("Entre com o tipo de veículo (Ex. Carro de passeio, Moto): ");
+                sc.nextLine();
+                String tipoVeiculo = sc.nextLine();
+
+                if(verificarEntrada(numero, categoriaVeiculo, tipoVeiculo)){
+                    System.out.println("\n****************************");
+                    System.out.print("Entre com a placa do veículo: ");
+                    String placa = sc.nextLine();
+
+                    System.out.println("\n****************************");
+                    System.out.print("Entre com a vaga a ser escolhida: ");
+                    int vagaEscolhida = sc.nextInt();
 
                     System.out.println("Ticket gerado com sucesso!");
                 }
-            } else if (categoriaVeiculo.equalsIgnoreCase("MENSALISTA")){
 
             } else if (categoriaVeiculo.equalsIgnoreCase("CAMINHAO_ENTREGA")) {
 

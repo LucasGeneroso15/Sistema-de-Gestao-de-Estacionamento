@@ -54,9 +54,6 @@ public class Menu {
                         continue;
                     }
                     Cancela.entradaCancela(cancela);
-
-
-
                     System.out.println();
                     break;
                 case 2:

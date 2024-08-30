@@ -3,11 +3,13 @@ package model.entities;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Objects;
 
 public class Ticket implements Serializable {
     private Integer id;
+    private String placaVeiculo;
     private LocalDateTime horaEntrada;
     private LocalDateTime horaSaida;
     private Integer cancelaEntrada;
@@ -15,8 +17,12 @@ public class Ticket implements Serializable {
     private Integer vagaEscolhida;
     private Double valorPago;
 
-    public Ticket(Integer id, LocalDateTime horaEntrada, Integer cancelaEntrada, Integer vagaEscolhida) {
+    public Ticket(){
+    }
+
+    public Ticket(Integer id, String placaVeiculo, LocalDateTime horaEntrada, Integer cancelaEntrada, Integer vagaEscolhida) {
         this.id = id;
+        this.placaVeiculo = placaVeiculo;
         this.horaEntrada = horaEntrada;
         this.cancelaEntrada = cancelaEntrada;
         this.vagaEscolhida = vagaEscolhida;
@@ -28,6 +34,14 @@ public class Ticket implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getPlacaVeiculo() {
+        return placaVeiculo;
+    }
+
+    public void setPlacaVeiculo(String placaVeiculo) {
+        this.placaVeiculo = placaVeiculo;
     }
 
     public LocalDateTime getHoraEntrada() {
@@ -83,17 +97,17 @@ public class Ticket implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Ticket ticket = (Ticket) o;
-        return Objects.equals(id, ticket.id);
+        return Objects.equals(id, ticket.id) && Objects.equals(placaVeiculo, ticket.placaVeiculo);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return Objects.hash(id, placaVeiculo);
     }
 
     @Override
     public String toString() {
-        return "Ticket{" +
+        return "TICKET {" +
                 "id=" + id +
                 ", horaEntrada=" + horaEntrada +
                 ", horaSaida=" + horaSaida +
