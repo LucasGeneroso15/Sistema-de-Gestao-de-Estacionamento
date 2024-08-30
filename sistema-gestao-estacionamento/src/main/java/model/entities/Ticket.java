@@ -114,7 +114,7 @@ public class Ticket implements Serializable {
                 ", hora Entrada = " + (horaEntrada != null ? horaEntrada.format(fmt) : "N/A") +
                 ", hora Saida = " + (horaSaida != null ? horaSaida.format(fmt) : "N/A") +
                 ", cancela Entrada =" + cancelaEntrada +
-                ", cancela Saida =" + cancelaSaida +
+                ", cancela Saida = " + cancelaSaida +
                 ", vaga Ocupada = " + vagaEscolhida +
                 ", valor Pago=" + valorPago +
                 '}';

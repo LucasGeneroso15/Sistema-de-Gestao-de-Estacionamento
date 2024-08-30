@@ -22,6 +22,13 @@ public class Veiculo implements Serializable {
         this.tamanhoVaga = tamanhoVaga;
     }
 
+    public Veiculo(Integer idVeiculo, String placa, String categoriaVeiculo, String tipo){
+        this.idVeiculo = idVeiculo;
+        this.placa = placa;
+        this.categoriaVeiculo = categoriaVeiculo;
+        this.tipo = tipo;
+    }
+
     public int getIdVeiculo() {
         return idVeiculo;
     }

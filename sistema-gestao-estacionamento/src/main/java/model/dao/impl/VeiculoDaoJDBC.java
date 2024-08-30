@@ -18,33 +18,60 @@ public class VeiculoDaoJDBC implements VeiculoDao {
     }
 
     @Override
-    public void insert(Veiculo obj) {
+    public void gerenciarEntradaSaida(Veiculo obj) {
         PreparedStatement st = null;
         try {
-            st = conn.prepareStatement(
-                    "INSERT INTO entrada_saida "
-                            + "(placa, categoria, tipo, tamanho_vaga) "
-                            + "VALUES "
-                            + "(?, ?, ?, ?)",
-                    Statement.RETURN_GENERATED_KEYS);
+            if(!obj.getCategoriaVeiculo().equalsIgnoreCase("SERVICO_PUBLICO")){
+                st = conn.prepareStatement(
+                        "INSERT INTO entrada_saida "
+                                + "(placa, categoria, tipo, tamanho_vaga) "
+                                + "VALUES "
+                                + "(?, ?, ?, ?)",
+                        Statement.RETURN_GENERATED_KEYS);
 
-            st.setString(1, obj.getPlaca());
-            st.setString(2, obj.getCategoriaVeiculo());
-            st.setString(3, obj.getTipo());
-            st.setInt(4, obj.getTamanhoVaga());
+                st.setString(1, obj.getPlaca());
+                st.setString(2, obj.getCategoriaVeiculo());
+                st.setString(3, obj.getTipo());
+                st.setInt(4, obj.getTamanhoVaga());
 
-            int rowsAffected = st.executeUpdate();
+                int rowsAffected = st.executeUpdate();
 
-            if (rowsAffected > 0){
-                ResultSet rs = st.getGeneratedKeys();
-                if(rs.next()){
-                    int id = rs.getInt(1);
-                    obj.setIdVeiculo(id);
+                if (rowsAffected > 0){
+                    ResultSet rs = st.getGeneratedKeys();
+                    if(rs.next()){
+                        int id = rs.getInt(1);
+                        obj.setIdVeiculo(id);
+                    }
+                    DB.closeResultSet(rs);
+                }else{
+                    throw new DbException("Unexpected error! No rows affected!");
                 }
-                DB.closeResultSet(rs);
             }else{
-                throw new DbException("Unexpected error! No rows affected!");
+                st = conn.prepareStatement(
+                        "INSERT INTO entrada_saida "
+                                + "(placa, categoria, tipo) "
+                                + "VALUES "
+                                + "(?, ?, ?)",
+                        Statement.RETURN_GENERATED_KEYS);
+
+                st.setString(1, obj.getPlaca());
+                st.setString(2, obj.getCategoriaVeiculo());
+                st.setString(3, obj.getTipo());
+
+                int rowsAffected = st.executeUpdate();
+
+                if (rowsAffected > 0){
+                    ResultSet rs = st.getGeneratedKeys();
+                    if(rs.next()){
+                        int id = rs.getInt(1);
+                        obj.setIdVeiculo(id);
+                    }
+                    DB.closeResultSet(rs);
+                }else{
+                    throw new DbException("Unexpected error! No rows affected!");
+                }
             }
+
         } catch (SQLException e) {
             throw new DbException(e.getMessage());
         }finally {
@@ -122,6 +149,30 @@ public class VeiculoDaoJDBC implements VeiculoDao {
             DB.closeResultSet(rs);
             DB.closeStatement(st);
         }
+    }
+
+    public Boolean procurarPlacaServPub(String placa) {
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        try {
+            st = conn.prepareStatement(
+                    "SELECT COUNT(*) AS count FROM entrada_saida " +
+                        "WHERE LOWER(placa) = LOWER(?) AND categoria = 'SERVICO_PUBLICO'");
+
+            st.setString(1, placa);
+            rs = st.executeQuery();
+
+            if (rs.next()) {
+                int count = rs.getInt("count");
+                return count > 0;
+            }
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        } finally {
+            DB.closeResultSet(rs);
+            DB.closeStatement(st);
+        }
+        return false;
     }
 
     @Override

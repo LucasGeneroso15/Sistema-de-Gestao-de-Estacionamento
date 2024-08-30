@@ -70,9 +70,9 @@ public class Cancela {
 
                         novoTicket = new Ticket(null, placa, LocalDateTime.now(), numero, numeroVaga);
                         ticketDao.novoTicket(novoTicket);
-                        veiculoDao.insert(new Veiculo(null, placa, tipoVeiculo, categoriaVeiculo, tamanhoVaga));
+                        veiculoDao.gerenciarEntradaSaida(new Veiculo(null, placa, tipoVeiculo, categoriaVeiculo, tamanhoVaga));
 
-                        System.out.println("Ticket gerado com sucesso: " + novoTicket);
+                        System.out.println("\nTicket gerado com sucesso: " + novoTicket);
 
                         if(tamanhoVaga == 1)
                             System.out.println("Vaga: " + numeroVaga);
@@ -106,9 +106,9 @@ public class Cancela {
                             List<Integer> atualizarVagas = vagasCadastrados.subList(0, tamanhoVaga);
                             vagaDao.updateVagas(atualizarVagas, true, false);
                             int numeroVaga = atualizarVagas.get(0);
-                            veiculoDao.insert(v1);
+                            veiculoDao.gerenciarEntradaSaida(v1);
 
-                            System.out.println("Veiculo: "+ v1 + " encontrado com sucesso."  );
+                            System.out.println("\nVeiculo: "+ v1 + " encontrado com sucesso."  );
                             System.out.println("Acesso liberado!");
                             if(tamanhoVaga == 1)
                                 System.out.println("Vaga: " + numeroVaga);
@@ -139,9 +139,9 @@ public class Cancela {
                             List<Integer> atualizarVagas = vagasCadastrados.subList(0, tamanhoVaga);
                             vagaDao.updateVagas(atualizarVagas, false, false);
                             int numeroVaga = atualizarVagas.get(0);
-                            veiculoDao.insert(v1);
+                            veiculoDao.gerenciarEntradaSaida(v1);
 
-                            System.out.println("Veiculo: "+ v1 + " encontrado com sucesso."  );
+                            System.out.println("\nVeiculo: "+ v1 + " encontrado com sucesso."  );
                             System.out.println("Acesso liberado!");
 
                             System.out.println("Vagas: " + numeroVaga + ", " + String.valueOf (numeroVaga + 1) + ", " + String.valueOf (numeroVaga + 2) + ", " + String.valueOf (numeroVaga + 3));
@@ -149,9 +149,23 @@ public class Cancela {
                     }
                 }
             }else{
+                String tipoVeiculo = "SERVICO_PUBLICO";
+                if(verificarEntrada(numero, categoriaVeiculo, tipoVeiculo)) {
+                    System.out.println("\n****************************");
+                    System.out.print("Entre com a placa do veículo: ");
+                    sc.nextLine();
+                    String placa = sc.nextLine();
 
+                    boolean placaRegistrada = veiculoDao.procurarPlacaServPub(placa);
+
+                    if (!placaRegistrada) {
+                        System.out.println("\nAcesso Liberado!");
+                        veiculoDao.gerenciarEntradaSaida(new Veiculo(null, placa, categoriaVeiculo, tipoVeiculo));
+                    } else {
+                        System.out.println("\nPlaca já registrada no local. Por favor, confira se o veículo ainda não saiu.");
+                    }
+                }
             }
-
         } catch (InputMismatchException e) {
             sc.next();
             System.out.println("\nESCOLHA UMA CATEGORIA ENTRE 1 E 4.\n");
