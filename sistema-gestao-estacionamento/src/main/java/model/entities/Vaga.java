@@ -3,6 +3,8 @@ package model.entities;
 import java.io.Serializable;
 import java.util.Objects;
 
+import static model.entities.Cancela.vagaDao;
+
 public class Vaga implements Serializable {
     private Integer idVaga;
     private Integer numeroVaga;
@@ -49,6 +51,15 @@ public class Vaga implements Serializable {
 
     public void setStatus(Boolean status) {
         this.status = status;
+    }
+
+    public static void atualizarStatusVagas(int numeroVaga, String categoriaVeiculo) {
+        if (categoriaVeiculo.equalsIgnoreCase("AVULSO")) {
+            vagaDao.atualizarStatusVagasComuns(numeroVaga);
+        }
+        else if (categoriaVeiculo.equalsIgnoreCase("MENSALISTA") || categoriaVeiculo.equalsIgnoreCase("CAMINHAO_ENTREGA")) {
+            vagaDao.atualizarStatusVagasCadastradas(numeroVaga, categoriaVeiculo);
+        }
     }
 
     @Override

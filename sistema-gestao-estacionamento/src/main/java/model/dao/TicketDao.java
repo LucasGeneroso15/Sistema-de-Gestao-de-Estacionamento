@@ -7,5 +7,7 @@ public interface TicketDao {
     void update(Ticket obj);
     void deleteById(Integer id);
     void novoTicket(Ticket obj);
+    Ticket buscarTicketPorPlaca(String placa);
+    void atualizarTicket(Ticket ticket);
     Ticket findById(Integer id);
 }

@@ -10,6 +10,8 @@ public interface VagaDao {
     void deleteById(Integer id);
     List<Integer> vagasDisponiveis(Integer tamanhoVaga);
     List<Integer> vagasDisponiveisCadastrados(Integer tamanhoVaga);
-    void updateVagas(List<Integer> numerosVagas, Boolean reservada, Boolean status);
+    void atualizarVagas(List<Integer> numerosVagas, Boolean reservada, Boolean status);
+    void atualizarStatusVagasComuns(int numeroVaga);
+    void atualizarStatusVagasCadastradas(int numeroVaga, String categoriaVeiculo);
     List<Vaga> findAll();
 }

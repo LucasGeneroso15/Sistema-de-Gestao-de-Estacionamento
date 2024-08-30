@@ -17,7 +17,7 @@ public class Ticket implements Serializable {
     private Integer vagaEscolhida;
     private Double valorPago;
 
-    private static DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
     public Ticket(){
     }
@@ -28,6 +28,16 @@ public class Ticket implements Serializable {
         this.horaEntrada = horaEntrada;
         this.cancelaEntrada = cancelaEntrada;
         this.vagaEscolhida = vagaEscolhida;
+    }
+
+    public Ticket(Integer id, LocalDateTime horaEntrada, LocalDateTime horaSaida, Integer cancelaEntrada, Integer cancelaSaida, Integer vagaEscolhida, Double valorPago) {
+        this.id = id;
+        this.horaEntrada = horaEntrada;
+        this.horaSaida = horaSaida;
+        this.cancelaEntrada = cancelaEntrada;
+        this.cancelaSaida = cancelaSaida;
+        this.vagaEscolhida = vagaEscolhida;
+        this.valorPago = valorPago;
     }
 
     public Integer getId() {
@@ -92,6 +102,10 @@ public class Ticket implements Serializable {
 
     public void setValorPago(Double valorPago) {
         this.valorPago = valorPago;
+    }
+
+    public Double valorTicket(Ticket ticket){
+        return null;
     }
 
     @Override

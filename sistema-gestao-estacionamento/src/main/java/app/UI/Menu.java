@@ -25,13 +25,12 @@ public class Menu {
                 op = sc.nextInt();
             } catch (InputMismatchException e) {
                 sc.next();
-                System.out.println("\nOPÇÃO INVÁLIDA! POR FAVOR, ESCOLHA OUTRA OPÇÃO.\n");
+                System.out.println("\nOpção Inválida! Por favor, escolha uma opção válida.\n");
                 continue;
             }
 
             switch (op) {
                 case 1:
-                    System.out.println();
                     System.out.println("****************************");
                     System.out.println("NOTA 1.: OS VEÍCULOS DE ENTREGA SÓ PODEM ACESSAR PELA CANCELA NÚMERO 1.");
                     System.out.println("NOTA 2.: OS VEÍCULOS DO TIPO 'MOTO' SÓ PODERÃO ACESSAR PELA CANCELA NÚMERO 5.");
@@ -43,11 +42,11 @@ public class Menu {
                     try {
                         cancela = sc.nextInt();
                         if (cancela < 1 || cancela > 5) {
-                            throw new CancelaException("\nAS CANCELAS DE ACESSO SÃO DE 1 A 5.\n");
+                            throw new CancelaException("\nAs cancelas de entrada são de 1 a 5!\n");
                         }
                     } catch (InputMismatchException e) {
                         sc.next();
-                        System.out.println("\nAS CANCELAS DE ACESSO SÃO DE 1 A 5.\n");
+                        System.out.println("\nAs cancelas de entrada são de 1 a 5!\n");
                         continue;
                     } catch (CancelaException e) {
                         System.out.println(e.getMessage());
@@ -57,7 +56,28 @@ public class Menu {
                     System.out.println();
                     break;
                 case 2:
-                    System.out.println("Saída do Estacionamento ainda não implementada.");
+                    System.out.println();
+                    System.out.println("****************************");
+                    System.out.println("NOTA 1.: OS VEÍCULOS DO TIPO 'MOTO' SÓ PODERÃO SAIR PELA CANCELA NÚMERO 10.");
+                    System.out.println();
+
+                    System.out.print("Escolha a cancela ( 6 - 10 ): ");
+
+                    try {
+                        cancela = sc.nextInt();
+                        if (cancela < 6 || cancela > 10) {
+                            throw new CancelaException("\nAs cancelas de saída são de 6 a 10!\n");
+                        }
+                    } catch (InputMismatchException e) {
+                        sc.next();
+                        System.out.println("\nAs cancelas de saída são de 6 a 10!\n");
+                        continue;
+                    } catch (CancelaException e) {
+                        System.out.println(e.getMessage());
+                        continue;
+                    }
+                    Cancela.saidaCancela(cancela);
+                    System.out.println();
                     break;
                 case 3:
                     System.out.println("Cadastro de veículo mensalista ainda não implementado.");

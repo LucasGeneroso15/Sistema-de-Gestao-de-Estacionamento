@@ -68,6 +68,61 @@ public class TicketDaoJDBC implements TicketDao {
     }
 
     @Override
+    public Ticket buscarTicketPorPlaca(String placa) {
+        PreparedStatement st = null;
+        try {
+            st = conn.prepareStatement(
+                    "SELECT * FROM ticket " +
+                        "WHERE LOWER(placa_veiculo) = LOWER(?) AND hora_saida IS NULL");
+
+            st.setString(1, placa);
+
+            ResultSet rs = st.executeQuery();
+
+            if(rs.next()){
+                return new Ticket (
+                        rs.getInt("id_ticket"),
+                        rs.getObject("hora_entrada" , LocalDateTime.class),
+                        rs.getObject("hora_saida", LocalDateTime.class),
+                        rs.getInt("cancela_entrada"),
+                        rs.getInt("cancela_saida"),
+                        rs.getInt("numero_vaga"),
+                        rs.getDouble("valor_pagar")
+
+                );
+            }
+            DB.closeResultSet(rs);
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+
+        }finally {
+            DB.closeStatement(st);
+        }
+        return null;
+    }
+
+    @Override
+    public void atualizarTicket(Ticket ticket) {
+        PreparedStatement st = null;
+        try {
+            st = conn.prepareStatement(
+                    "UPDATE ticket SET hora_saida = ?, cancela_saida = ?, valor_pagar = ? " +
+                        "WHERE id_ticket = ?");
+
+            st.setObject(1, ticket.getHoraSaida());
+            st.setInt(2, ticket.getCancelaSaida());
+            st.setDouble(3, ticket.getValorPago());
+            st.setInt(4, ticket.getId());
+            st.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        }finally {
+            DB.closeStatement(st);
+        }
+    }
+
+    @Override
     public Ticket findById(Integer id) {
         return null;
     }

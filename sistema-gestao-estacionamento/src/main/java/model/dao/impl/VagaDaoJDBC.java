@@ -186,7 +186,7 @@ public class VagaDaoJDBC implements VagaDao {
     }
 
     @Override
-    public void updateVagas(List<Integer> numerosVagas, Boolean reservada, Boolean status) {
+    public void atualizarVagas(List<Integer> numerosVagas, Boolean reservada, Boolean status) {
         PreparedStatement st = null;
         try {
             st = conn.prepareStatement(
@@ -207,6 +207,49 @@ public class VagaDaoJDBC implements VagaDao {
                     throw new DbException("No rows affected. Check if the vaga exists.");
                 }
             }
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        } finally {
+            DB.closeStatement(st);
+        }
+    }
+
+    @Override
+    public void atualizarStatusVagasComuns(int numeroVaga) {
+        PreparedStatement st = null;
+        try {
+            st = conn.prepareStatement(
+                    "UPDATE vagas SET status = TRUE " +
+                        "WHERE numero_vaga = ?");
+
+            st.setObject(1, numeroVaga);
+            st.executeUpdate();
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        }finally {
+            DB.closeStatement(st);
+        }
+    }
+
+    @Override
+    public void atualizarStatusVagasCadastradas(int numeroVaga, String categoriaVeiculo) {
+        PreparedStatement st = null;
+        try {
+            if (categoriaVeiculo.equalsIgnoreCase("MENSALISTA")) {
+                st = conn.prepareStatement(
+                        "UPDATE vagas SET status = TRUE " +
+                                "WHERE numero_vaga = ? AND reservada = TRUE");
+
+            } else if (categoriaVeiculo.equalsIgnoreCase("CAMINHAO_ENTREGA")) {
+                st = conn.prepareStatement(
+                        "UPDATE vagas SET status = TRUE " +
+                                "WHERE numero_vaga = ? AND reservada = FALSE");
+            } else {
+                return;
+            }
+            st.setInt(1, numeroVaga);
+            st.executeUpdate();
+
         } catch (SQLException e) {
             throw new DbException(e.getMessage());
         } finally {
