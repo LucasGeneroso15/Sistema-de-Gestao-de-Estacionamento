@@ -62,6 +62,7 @@ public class VagaDaoJDBC implements VagaDao {
         PreparedStatement st = null;
         ResultSet rs = null;
         List<Integer> vagas = new ArrayList<>();
+
         try {
             st = conn.prepareStatement(
                     "SELECT numero_vaga FROM vagas " +
@@ -73,28 +74,28 @@ public class VagaDaoJDBC implements VagaDao {
             int lastNumeroVaga = -1;
 
             while (rs.next()) {
-
                 int numeroVaga = rs.getInt("numero_vaga");
 
                 if (lastNumeroVaga == -1 || numeroVaga == lastNumeroVaga + 1) {
                     vagas.add(numeroVaga);
                     count++;
                     if (count == tamanhoVaga) {
-                        break;
+                        return vagas;
                     }
                 } else {
                     vagas.clear();
-                    count = 0;
+                    count = 1;
+                    vagas.add(numeroVaga);
                 }
                 lastNumeroVaga = numeroVaga;
             }
+            return new ArrayList<>();
         } catch (SQLException e) {
             throw new DbException(e.getMessage());
         } finally {
             DB.closeResultSet(rs);
             DB.closeStatement(st);
         }
-        return vagas;
     }
 
     @Override
