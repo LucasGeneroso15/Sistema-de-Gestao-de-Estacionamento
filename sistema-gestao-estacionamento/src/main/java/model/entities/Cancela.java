@@ -17,8 +17,6 @@ public class Cancela {
     static VeiculoDao veiculoDao = DaoFactory.createVeiculoDao();
     static TicketDao ticketDao = DaoFactory.createTicketDao();
 
-    private static DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-
     public Cancela(int numero) {
         this.numero = numero;
     }
@@ -190,103 +188,106 @@ public class Cancela {
         String placa = sc.nextLine();
 
         Veiculo v1 = veiculoDao.procurarVeiculoPlaca(placa);
+        try {
+            if (v1 != null) {
+                if (v1.getCategoriaVeiculo().equalsIgnoreCase("AVULSO")) {
 
-        if (v1 != null) {
-            if (v1.getCategoriaVeiculo().equalsIgnoreCase("AVULSO")) {
+                    Ticket ticket = ticketDao.buscarTicketPorPlaca(placa);
 
-                Ticket ticket = ticketDao.buscarTicketPorPlaca(placa);
+                    if (ticket != null) {
+                        if (verificarSaida(numero, v1.getCategoriaVeiculo(), v1.getTipo())) {
+                            System.out.print("Entre com a hora de saída (yyyy/MM/dd HH:mm): ");
+                            String horaSaidaStr = sc.nextLine();
+                            LocalDateTime horaSaida = LocalDateTime.parse(horaSaidaStr, DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm"));
+                            ticket.setHoraSaida(horaSaida);
+                            ticket.setCancelaSaida(numero);
 
-                if (ticket != null) {
-                    if(verificarSaida(numero, v1.getCategoriaVeiculo(), v1.getTipo())){
-                        System.out.print("Entre com a hora de saída (yyyy/MM/dd HH:mm): ");
-                        String horaSaidaStr = sc.nextLine();
-                        LocalDateTime horaSaida = LocalDateTime.parse(horaSaidaStr, DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm"));
-                        ticket.setHoraSaida(horaSaida);
-                        ticket.setCancelaSaida(numero);
+                            double valorPago = CalcularPagamento.calcularValor(ticket, v1.getCategoriaVeiculo());
+                            ticket.setValorPago(valorPago);
 
-                        double valorPago = CalcularPagamento.calcularValor(ticket, v1.getCategoriaVeiculo());
-                        ticket.setValorPago(valorPago);
+                            ticketDao.atualizarTicket(ticket);
 
-                        ticketDao.atualizarTicket(ticket);
+                            System.out.println("Valor a pagar: " + ticket.getValorPago());
 
-                        System.out.println("Valor a pagar: " + ticket.getValorPago());
+                            List<Integer> vagasOcupadas = new ArrayList<>();
+                            vagasOcupadas.add(ticket.getVagaEscolhida());
+
+                            for (int i = 0; i < v1.getTamanhoVaga(); i++) {
+                                vagasOcupadas.add(ticket.getVagaEscolhida() + i);
+                            }
+
+                            vagaDao.atualizarVagas(vagasOcupadas, false, true);
+
+                            System.out.println("...");
+                            System.out.println("\nPagamento processado! Tenha uma ótima viagem!");
+                        }
+                    } else {
+                        System.out.println("Ticket não encontrado para a placa mencionada.");
+                    }
+                } else if (v1.getCategoriaVeiculo().equalsIgnoreCase("MENSALISTA")) {
+                    if (verificarSaida(numero, v1.getCategoriaVeiculo(), v1.getTipo())) {
+
+                        Veiculo v2 = veiculoDao.procurarPlacaMensalista(placa);
+
+                        Vaga.atualizarStatusVagas(v2.getNumeroVaga(), v2.getCategoriaVeiculo());
 
                         List<Integer> vagasOcupadas = new ArrayList<>();
-                        vagasOcupadas.add(ticket.getVagaEscolhida());
+                        vagasOcupadas.add(v2.getNumeroVaga());
 
-                        for (int i = 0; i < v1.getTamanhoVaga(); i++) {
-                            vagasOcupadas.add(ticket.getVagaEscolhida() + i);
+                        for (int i = 0; i < v2.getTamanhoVaga(); i++) {
+                            vagasOcupadas.add(v2.getNumeroVaga() + i);
+                        }
+
+                        vagaDao.atualizarVagas(vagasOcupadas, true, true);
+
+                        System.out.println("...");
+                        System.out.println("\nPlano Mensalista!");
+                        System.out.println("\nSaída processada! Tenha uma ótima viagem!");
+                    }
+                } else if (v1.getCategoriaVeiculo().equalsIgnoreCase("CAMINHAO_ENTREGA")) {
+                    if (verificarSaida(numero, v1.getCategoriaVeiculo(), v1.getTipo())) {
+
+                        Veiculo v2 = veiculoDao.procurarPlacaCaminhao(placa);
+
+                        Vaga.atualizarStatusVagas(v2.getNumeroVaga(), v2.getCategoriaVeiculo());
+
+                        List<Integer> vagasOcupadas = new ArrayList<>();
+                        vagasOcupadas.add(v2.getNumeroVaga());
+
+                        for (int i = 0; i < v2.getTamanhoVaga(); i++) {
+                            vagasOcupadas.add(v2.getNumeroVaga() + i);
                         }
 
                         vagaDao.atualizarVagas(vagasOcupadas, false, true);
 
                         System.out.println("...");
-                        System.out.println("\nPagamento processado! Tenha uma ótima viagem!");
+                        System.out.println("\nCaminhão previamente cadastrado!.");
+                        System.out.println("\nSaída processada! Tenha uma ótima viagem!");
                     }
                 } else {
-                    System.out.println("Ticket não encontrado para a placa mencionada.");
-                }
-            } else if (v1.getCategoriaVeiculo().equalsIgnoreCase("MENSALISTA")) {
-                if(verificarSaida(numero, v1.getCategoriaVeiculo(), v1.getTipo())){
-
-                    Veiculo v2 = veiculoDao.procurarPlacaMensalista(placa);
-
-                    Vaga.atualizarStatusVagas(v2.getNumeroVaga(), v2.getCategoriaVeiculo());
-
-                    List<Integer> vagasOcupadas = new ArrayList<>();
-                    vagasOcupadas.add(v2.getNumeroVaga());
-
-                    for (int i = 0; i < v2.getTamanhoVaga(); i++) {
-                        vagasOcupadas.add(v2.getNumeroVaga() + i);
+                    boolean placaRegistrada = veiculoDao.procurarPlacaServPub(placa);
+                    if (!placaRegistrada) {
+                        System.out.println("\nPlaca não registrada no local. Por favor, confira se o veículo já saiu.");
+                    } else {
+                        veiculoDao.removerVeiculoServicoPublico(placa);
+                        System.out.println("...");
+                        System.out.println("\nVeículo de Serviço Publico saiu do local!");
                     }
-
-                    vagaDao.atualizarVagas(vagasOcupadas, true, true);
-
-                    veiculoDao.atualizarMensalista(placa ,null);
-
-                    System.out.println("...");
-                    System.out.println("\nPlano Mensalista!");
-                    System.out.println("\nSaída processada! Tenha uma ótima viagem!");
-                }
-            } else if (v1.getCategoriaVeiculo().equalsIgnoreCase("CAMINHAO_ENTREGA")) {
-                if(verificarSaida(numero, v1.getCategoriaVeiculo(), v1.getTipo())){
-
-                    Veiculo v2 = veiculoDao.procurarPlacaCaminhao(placa);
-
-                    Vaga.atualizarStatusVagas(v2.getNumeroVaga(), v2.getCategoriaVeiculo());
-
-                    List<Integer> vagasOcupadas = new ArrayList<>();
-                    vagasOcupadas.add(v2.getNumeroVaga());
-
-                    for (int i = 0; i < v2.getTamanhoVaga(); i++) {
-                        vagasOcupadas.add(v2.getNumeroVaga() + i);
-                    }
-
-                    vagaDao.atualizarVagas(vagasOcupadas, false, true);
-
-                    System.out.println("...");
-                    System.out.println("\nCaminhão previamente cadastrado!.");
-                    System.out.println("\nSaída processada! Tenha uma ótima viagem!");
                 }
             } else {
-                boolean placaRegistrada = veiculoDao.procurarPlacaServPub(placa);
-                if (!placaRegistrada) {
-                    System.out.println("\nPlaca não registrada no local. Por favor, confira se o veículo já saiu.");
-                } else {
-                    veiculoDao.removerVeiculoServicoPublico(placa);
-                    System.out.println("...");
-                    System.out.println("\nVeículo de Serviço Publico saiu do local!");
-                }
+                System.out.println("Veículo não encontrado! Por favor, verifique a placa.");
             }
-        } else {
-            System.out.println("Veículo não encontrado! Por favor, verifique a placa.");
+        } catch (CancelaException e) {
+            throw new CancelaException(e.getMessage());
+        }catch (InputMismatchException e){
+            throw new InputMismatchException("Verifique se as informações digitadas estão corretas.");
         }
     }
 
     public static boolean verificarEntrada(int numero, String categoriaVeiculo, String tipoVeiculo){
 
         if(categoriaVeiculo.equalsIgnoreCase("AVULSO")){
-            if (tipoVeiculo.toUpperCase().equals("MOTO")) {
+            if (tipoVeiculo.equalsIgnoreCase("MOTO")) {
                 if (numero == 5) {
                     return true;
                 } else {
@@ -296,7 +297,7 @@ public class Cancela {
                     return true;
             }
         }else if (categoriaVeiculo.equalsIgnoreCase("MENSALISTA")){
-            if (tipoVeiculo.toUpperCase().equals("MOTO")) {
+            if (tipoVeiculo.equalsIgnoreCase("MOTO")) {
                 if (numero == 5) {
                     return true;
                 } else {
@@ -321,7 +322,7 @@ public class Cancela {
     public static boolean verificarSaida(int numero, String categoriaVeiculo, String tipoVeiculo) {
 
         if(categoriaVeiculo.equalsIgnoreCase("AVULSO")){
-            if (tipoVeiculo.toUpperCase().equals("MOTO")) {
+            if (tipoVeiculo.equalsIgnoreCase("MOTO")) {
                 if (numero == 10) {
                     return true;
                 } else {
@@ -331,7 +332,7 @@ public class Cancela {
                 return true;
             }
         }else if (categoriaVeiculo.equalsIgnoreCase("MENSALISTA")){
-            if (tipoVeiculo.toUpperCase().equals("MOTO")) {
+            if (tipoVeiculo.equalsIgnoreCase("MOTO")) {
                 if (numero == 10) {
                     return true;
                 } else {

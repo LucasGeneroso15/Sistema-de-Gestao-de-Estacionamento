@@ -18,21 +18,6 @@ public class TicketDaoJDBC implements TicketDao {
     }
 
     @Override
-    public void insert(Ticket obj) {
-
-    }
-
-    @Override
-    public void update(Ticket obj) {
-
-    }
-
-    @Override
-    public void deleteById(Integer id) {
-
-    }
-
-    @Override
     public void novoTicket(Ticket obj) {
         PreparedStatement st = null;
         try {
@@ -120,10 +105,5 @@ public class TicketDaoJDBC implements TicketDao {
         }finally {
             DB.closeStatement(st);
         }
-    }
-
-    @Override
-    public Ticket findById(Integer id) {
-        return null;
     }
 }

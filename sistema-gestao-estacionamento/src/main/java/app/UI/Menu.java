@@ -1,9 +1,7 @@
 package app.UI;
 
 import model.entities.Cancela;
-import model.entities.Ticket;
 import model.entities.Veiculo;
-import model.entities.enums.CategoriaVeiculo;
 import model.exception.CancelaException;
 
 import java.util.InputMismatchException;
@@ -12,7 +10,6 @@ import java.util.Scanner;
 public class Menu {
     public static void mostrarMenu(Scanner sc) {
         int op = 0;
-
         do {
             System.out.println("****** Sistema de Gestão de Estacionamento ******");
             System.out.println("Escolha a opção desejada: ");
@@ -21,7 +18,6 @@ public class Menu {
             System.out.println(" 3 - Cadastrar Veículo Mensalista");
             System.out.println(" 4 - Finalizar");
             System.out.print(">>> ");
-
             try {
                 op = sc.nextInt();
             } catch (InputMismatchException e) {
@@ -105,14 +101,13 @@ public class Menu {
                     System.out.println("Veículo cadastrado com sucesso!");
                     break;
                 case 4:
-                    System.out.println("Finalizando o sistema...");
+                    System.out.println("Sistema Finalizado!");
                     break;
                 default:
                     System.out.println("Opção não encontrada! Por favor, escolha uma opção entre 1 e 4.");
                     break;
             }
         } while (op != 4);
-
         sc.close();
     }
 }

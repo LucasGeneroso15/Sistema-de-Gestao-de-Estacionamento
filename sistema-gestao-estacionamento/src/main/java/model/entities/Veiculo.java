@@ -1,12 +1,10 @@
 package model.entities;
 
 import model.dao.DaoFactory;
-import model.dao.VagaDao;
 import model.dao.VeiculoDao;
-import model.dao.impl.VeiculoDaoJDBC;
-import model.entities.enums.CategoriaVeiculo;
 
 import java.io.Serializable;
+import java.util.InputMismatchException;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Scanner;
@@ -124,33 +122,38 @@ public class Veiculo implements Serializable {
 
         String categoriaVeiculo = categoria == 1 ? "MENSALISTA" : "CAMINHAO_ENTREGA";
         Veiculo v1;
-        if (categoriaVeiculo.equalsIgnoreCase("MENSALISTA")){
-            Locale.setDefault(Locale.US);
 
-            System.out.println();
-            System.out.println("\n****************************");
-            System.out.print("Entre com o tipo de veículo (Ex. Carro de passeio, Moto): ");
-            String tipoVeiculo = sc.nextLine();
+        try {
+            if (categoriaVeiculo.equalsIgnoreCase("MENSALISTA")) {
+                Locale.setDefault(Locale.US);
 
-            System.out.println("\n****************************");
-            System.out.print("Entre com a placa do veículo: ");
-            String placa = sc.nextLine();
+                System.out.println();
+                System.out.println("\n****************************");
+                System.out.print("Entre com o tipo de veículo (Ex. Carro de passeio, Moto): ");
+                String tipoVeiculo = sc.nextLine();
 
-            int tamanhoVaga = tipoVeiculo.equalsIgnoreCase("moto") ? 1 : 2;
+                System.out.println("\n****************************");
+                System.out.print("Entre com a placa do veículo: ");
+                String placa = sc.nextLine();
 
-            v1 = new Veiculo(null, placa, tipoVeiculo, categoriaVeiculo, 250.00, tamanhoVaga);
-            veiculoDao.cadastrarVeiculo(v1);
-            System.out.println(v1);
-        }else{
-            System.out.println("\n****************************");
-            System.out.print("Entre com a placa do veículo: ");
-            String placa = sc.nextLine();
+                int tamanhoVaga = tipoVeiculo.equalsIgnoreCase("moto") ? 1 : 2;
 
-            int tamanhoVaga = 4;
+                v1 = new Veiculo(null, placa, tipoVeiculo, categoriaVeiculo, 250.00, tamanhoVaga);
+                veiculoDao.cadastrarVeiculo(v1);
+                System.out.println(v1);
+            } else {
+                System.out.println("\n****************************");
+                System.out.print("Entre com a placa do veículo: ");
+                String placa = sc.nextLine();
 
-            v1 = new Veiculo(null, placa, categoriaVeiculo, categoriaVeiculo, tamanhoVaga);
-            veiculoDao.cadastrarVeiculo(v1);
-            System.out.println(v1);
+                int tamanhoVaga = 4;
+
+                v1 = new Veiculo(null, placa, categoriaVeiculo, categoriaVeiculo, tamanhoVaga);
+                veiculoDao.cadastrarVeiculo(v1);
+                System.out.println(v1);
+            }
+        }catch (InputMismatchException e){
+            throw new InputMismatchException("Verifique se as informações digitadas estão corretas!");
         }
     }
 

@@ -6,7 +6,6 @@ import model.dao.VeiculoDao;
 import model.entities.Veiculo;
 
 import java.sql.*;
-import java.util.List;
 
 public class VeiculoDaoJDBC implements VeiculoDao {
 
@@ -43,7 +42,7 @@ public class VeiculoDaoJDBC implements VeiculoDao {
                     }
                     DB.closeResultSet(rs);
                 }else{
-                    throw new DbException("Unexpected error! No rows affected!");
+                    throw new DbException("Erro! nenhuma linha afetada.");
                 }
             }else{
                 st = conn.prepareStatement(
@@ -67,7 +66,7 @@ public class VeiculoDaoJDBC implements VeiculoDao {
                     }
                     DB.closeResultSet(rs);
                 }else{
-                    throw new DbException("Unexpected error! No rows affected!");
+                    throw new DbException("Erro! nenhuma linha afetada.");
                 }
             }
 
@@ -107,7 +106,7 @@ public class VeiculoDaoJDBC implements VeiculoDao {
             }else {
                 st = conn.prepareStatement("INSERT INTO veiculos_cadastrados " +
                         "(placa, tipo, categoria, tamanho_vaga) " +
-                        "VALUES (?, ?, ?, ?, ?)",
+                        "VALUES (?, ?, ?, ?)",
                 Statement.RETURN_GENERATED_KEYS);
 
                 st.setString(1, veiculo.getPlaca());
@@ -131,16 +130,6 @@ public class VeiculoDaoJDBC implements VeiculoDao {
         } finally {
             DB.closeStatement(st);
         }
-    }
-
-    @Override
-    public void update(Veiculo obj) {
-
-    }
-
-    @Override
-    public void deleteById(Integer id) {
-
     }
 
     @Override
@@ -178,7 +167,6 @@ public class VeiculoDaoJDBC implements VeiculoDao {
     @Override
     public void atualizarMensalista(String placa, Integer numeroVaga) {
         PreparedStatement st = null;
-        ResultSet rs = null;
         try {
             st = conn.prepareStatement(
                     "UPDATE veiculos_cadastrados SET numero_vaga = ? " +
@@ -197,7 +185,6 @@ public class VeiculoDaoJDBC implements VeiculoDao {
         } catch (SQLException e) {
             throw new DbException(e.getMessage());
         } finally {
-            // Fechar statement
             DB.closeStatement(st);
         }
     }
@@ -237,7 +224,6 @@ public class VeiculoDaoJDBC implements VeiculoDao {
     @Override
     public void atualizarCaminhao(String placa, Integer numeroVaga) {
         PreparedStatement st = null;
-        ResultSet rs = null;
         try {
             st = conn.prepareStatement(
                     "UPDATE veiculos_cadastrados SET numero_vaga = ? " +
@@ -313,8 +299,10 @@ public class VeiculoDaoJDBC implements VeiculoDao {
     public void removerVeiculoServicoPublico(String placa) {
         PreparedStatement st = null;
         try {
-            String sql = "DELETE FROM entrada_saida WHERE LOWER(placa) = LOWER(?) AND categoria = 'SERVICO_PUBLICO'";
-            st = conn.prepareStatement(sql);
+            st = conn.prepareStatement(
+                    "DELETE FROM entrada_saida " +
+                        "WHERE LOWER(placa) = LOWER(?) AND categoria = 'SERVICO_PUBLICO'");
+
             st.setString(1, placa);
 
             int rowsAffected = st.executeUpdate();
@@ -329,10 +317,5 @@ public class VeiculoDaoJDBC implements VeiculoDao {
         } finally {
             DB.closeStatement(st);
         }
-    }
-
-    @Override
-    public List<Veiculo> findAll() {
-        return List.of();
     }
 }
