@@ -13,6 +13,7 @@ public class Veiculo implements Serializable {
     private String categoriaVeiculo;
     private Double valorPagar;
     private Integer tamanhoVaga;
+    private Integer numeroVaga;
 
     public Veiculo(Integer idVeiculo, String placa, String tipo, String categoriaVeiculo, Integer tamanhoVaga) {
         this.idVeiculo = idVeiculo;
@@ -22,11 +23,27 @@ public class Veiculo implements Serializable {
         this.tamanhoVaga = tamanhoVaga;
     }
 
+    public Veiculo(Integer idVeiculo, String placa, String tipo, String categoriaVeiculo, Integer tamanhoVaga, Integer numeroVaga) {
+        this.idVeiculo = idVeiculo;
+        this.placa = placa;
+        this.tipo = tipo;
+        this.categoriaVeiculo = categoriaVeiculo;
+        this.tamanhoVaga = tamanhoVaga;
+        this.numeroVaga = numeroVaga;
+    }
+
     public Veiculo(Integer idVeiculo, String placa, String categoriaVeiculo, String tipo){
         this.idVeiculo = idVeiculo;
         this.placa = placa;
         this.categoriaVeiculo = categoriaVeiculo;
         this.tipo = tipo;
+    }
+
+    public Veiculo(String placa, String tipo, String categoriaVeiculo, Integer tamanhoVaga) {
+        this.placa = placa;
+        this.tipo = tipo;
+        this.categoriaVeiculo = categoriaVeiculo;
+        this.tamanhoVaga = tamanhoVaga;
     }
 
     public int getIdVeiculo() {
@@ -75,6 +92,14 @@ public class Veiculo implements Serializable {
 
     public void setTamanhoVaga(Integer tamanhoVaga) {
         this.tamanhoVaga = tamanhoVaga;
+    }
+
+    public Integer getNumeroVaga() {
+        return numeroVaga;
+    }
+
+    public void setNumeroVaga(Integer numeroVaga) {
+        this.numeroVaga = numeroVaga;
     }
 
     private double valorPagar(){

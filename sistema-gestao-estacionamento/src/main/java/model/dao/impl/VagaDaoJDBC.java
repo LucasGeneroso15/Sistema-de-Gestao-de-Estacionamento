@@ -238,12 +238,12 @@ public class VagaDaoJDBC implements VagaDao {
             if (categoriaVeiculo.equalsIgnoreCase("MENSALISTA")) {
                 st = conn.prepareStatement(
                         "UPDATE vagas SET status = TRUE " +
-                                "WHERE numero_vaga = ? AND reservada = TRUE");
+                                "WHERE numero_vaga = ?");
 
             } else if (categoriaVeiculo.equalsIgnoreCase("CAMINHAO_ENTREGA")) {
                 st = conn.prepareStatement(
                         "UPDATE vagas SET status = TRUE " +
-                                "WHERE numero_vaga = ? AND reservada = FALSE");
+                                "WHERE numero_vaga = ?");
             } else {
                 return;
             }
