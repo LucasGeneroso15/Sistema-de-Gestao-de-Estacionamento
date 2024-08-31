@@ -2,6 +2,7 @@ package app.UI;
 
 import model.entities.Cancela;
 import model.entities.Ticket;
+import model.entities.Veiculo;
 import model.entities.enums.CategoriaVeiculo;
 import model.exception.CancelaException;
 
@@ -80,7 +81,28 @@ public class Menu {
                     System.out.println();
                     break;
                 case 3:
-                    System.out.println("Cadastro de veículo mensalista ainda não implementado.");
+                    System.out.println();
+                    System.out.println("****************************");
+                    System.out.println("CADASTRO DE VEICULOS");
+                    System.out.println();
+                    System.out.println("CATEGORIAS DE VEÍCULO: 1 - MENSALISTA, 2 - CAMINHAO DE ENTREGA");
+                    System.out.print("\nEntre com a categoria de veiculo que deseja cadastrar ( 1 ou 2 ): ");
+                    int categoria;
+                    try {
+                        categoria = sc.nextInt();
+                        if (categoria < 1 || categoria > 2) {
+                            throw new CancelaException("\nCategoria inválida! Escolha uma categoria dentro das opções.\n");
+                        }
+                    } catch (InputMismatchException e) {
+                        sc.next();
+                        System.out.println("\nCategoria inválida! Escolha uma categoria dentro das opções.\n");
+                        continue;
+                    } catch (CancelaException e) {
+                        System.out.println(e.getMessage());
+                        continue;
+                    }
+                    Veiculo.cadastrarVeiculo(categoria);
+                    System.out.println("Veículo cadastrado com sucesso!");
                     break;
                 case 4:
                     System.out.println("Finalizando o sistema...");

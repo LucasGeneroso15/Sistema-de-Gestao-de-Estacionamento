@@ -1,10 +1,15 @@
 package model.entities;
 
+import model.dao.DaoFactory;
+import model.dao.VagaDao;
+import model.dao.VeiculoDao;
+import model.dao.impl.VeiculoDaoJDBC;
 import model.entities.enums.CategoriaVeiculo;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.Scanner;
 
 public class Veiculo implements Serializable {
     private Integer idVeiculo;
@@ -15,11 +20,23 @@ public class Veiculo implements Serializable {
     private Integer tamanhoVaga;
     private Integer numeroVaga;
 
+    private static VeiculoDao veiculoDao = DaoFactory.createVeiculoDao();
+
+
     public Veiculo(Integer idVeiculo, String placa, String tipo, String categoriaVeiculo, Integer tamanhoVaga) {
         this.idVeiculo = idVeiculo;
         this.placa = placa;
         this.tipo = tipo;
         this.categoriaVeiculo = categoriaVeiculo;
+        this.tamanhoVaga = tamanhoVaga;
+    }
+
+    public Veiculo(Integer idVeiculo, String placa, String tipo, String categoriaVeiculo, Double valorPagar, Integer tamanhoVaga) {
+        this.idVeiculo = idVeiculo;
+        this.placa = placa;
+        this.tipo = tipo;
+        this.categoriaVeiculo = categoriaVeiculo;
+        this.valorPagar = valorPagar;
         this.tamanhoVaga = tamanhoVaga;
     }
 
@@ -102,9 +119,39 @@ public class Veiculo implements Serializable {
         this.numeroVaga = numeroVaga;
     }
 
-    private double valorPagar(){
-        //calcular baseado no tipo;
-        return 5.00;
+    public static void cadastrarVeiculo(Integer categoria){
+        Scanner sc = new Scanner(System.in);
+
+        String categoriaVeiculo = categoria == 1 ? "MENSALISTA" : "CAMINHAO_ENTREGA";
+        Veiculo v1;
+        if (categoriaVeiculo.equalsIgnoreCase("MENSALISTA")){
+            Locale.setDefault(Locale.US);
+
+            System.out.println();
+            System.out.println("\n****************************");
+            System.out.print("Entre com o tipo de veículo (Ex. Carro de passeio, Moto): ");
+            String tipoVeiculo = sc.nextLine();
+
+            System.out.println("\n****************************");
+            System.out.print("Entre com a placa do veículo: ");
+            String placa = sc.nextLine();
+
+            int tamanhoVaga = tipoVeiculo.equalsIgnoreCase("moto") ? 1 : 2;
+
+            v1 = new Veiculo(null, placa, tipoVeiculo, categoriaVeiculo, 250.00, tamanhoVaga);
+            veiculoDao.cadastrarVeiculo(v1);
+            System.out.println(v1);
+        }else{
+            System.out.println("\n****************************");
+            System.out.print("Entre com a placa do veículo: ");
+            String placa = sc.nextLine();
+
+            int tamanhoVaga = 4;
+
+            v1 = new Veiculo(null, placa, categoriaVeiculo, categoriaVeiculo, tamanhoVaga);
+            veiculoDao.cadastrarVeiculo(v1);
+            System.out.println(v1);
+        }
     }
 
     @Override
@@ -122,12 +169,14 @@ public class Veiculo implements Serializable {
 
     @Override
     public String toString() {
-        return "Veiculo {" +
+        return "Veiculo { " +
                 "idVeiculo = " + idVeiculo +
                 ", placa = '" + placa + '\'' +
                 ", tipo = '" + tipo + '\'' +
-                ", categoriaVeiculo = " + categoriaVeiculo +
+                ", categoriaVeiculo = '" + categoriaVeiculo + '\'' +
+                ", valorPagar = " + valorPagar +
                 ", tamanhoVaga = " + tamanhoVaga +
+                ", numeroVaga = " + numeroVaga +
                 '}';
     }
 }

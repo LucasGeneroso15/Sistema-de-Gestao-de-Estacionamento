@@ -143,8 +143,10 @@ public class Cancela {
                         } else {
                             List<Integer> atualizarVagas = vagasCadastrados.subList(0, tamanhoVaga);
                             vagaDao.atualizarVagas(atualizarVagas, false, false);
+
                             int numeroVaga = atualizarVagas.get(0);
-                            v1.setNumeroVaga(numeroVaga);
+
+                            veiculoDao.atualizarCaminhao(placa ,numeroVaga);
                             veiculoDao.gerenciarEntradaSaida(v1);
 
                             System.out.println("\nVeiculo: "+ v1 + " encontrado com sucesso."  );
@@ -240,12 +242,15 @@ public class Cancela {
 
                     vagaDao.atualizarVagas(vagasOcupadas, true, true);
 
+                    veiculoDao.atualizarMensalista(placa ,null);
+
                     System.out.println("...");
-                    System.out.println("\nPlano Mensalista! Não é necessário gerar um ticket.");
+                    System.out.println("\nPlano Mensalista!");
                     System.out.println("\nSaída processada! Tenha uma ótima viagem!");
                 }
-            } else if (v1.getCategoriaVeiculo().equalsIgnoreCase("CAMINHOES_ENTREGA")) {
+            } else if (v1.getCategoriaVeiculo().equalsIgnoreCase("CAMINHAO_ENTREGA")) {
                 if(verificarSaida(numero, v1.getCategoriaVeiculo(), v1.getTipo())){
+
                     Veiculo v2 = veiculoDao.procurarPlacaCaminhao(placa);
 
                     Vaga.atualizarStatusVagas(v2.getNumeroVaga(), v2.getCategoriaVeiculo());

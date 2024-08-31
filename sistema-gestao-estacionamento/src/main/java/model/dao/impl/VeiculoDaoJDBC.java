@@ -79,6 +79,61 @@ public class VeiculoDaoJDBC implements VeiculoDao {
     }
 
     @Override
+    public void cadastrarVeiculo(Veiculo veiculo) {
+        PreparedStatement st = null;
+        try {
+            if(veiculo.getCategoriaVeiculo().equalsIgnoreCase("MENSALISTA")){
+                st = conn.prepareStatement( "INSERT INTO veiculos_cadastrados " +
+                        "(placa, tipo, categoria, valor_pagar, tamanho_vaga) " +
+                        "VALUES (?, ?, ?, ?, ?)",
+                        Statement.RETURN_GENERATED_KEYS);
+
+                st.setString(1, veiculo.getPlaca());
+                st.setString(2, veiculo.getTipo());
+                st.setString(3, veiculo.getCategoriaVeiculo());
+                st.setDouble(4, veiculo.getValorPagar());
+                st.setInt(5, veiculo.getTamanhoVaga());
+
+                int rowsAffected = st.executeUpdate();
+
+                if (rowsAffected > 0){
+                    ResultSet rs = st.getGeneratedKeys();
+                    if(rs.next()){
+                        int id = rs.getInt(1);
+                        veiculo.setIdVeiculo(id);
+                    }
+                    DB.closeResultSet(rs);
+                }
+            }else {
+                st = conn.prepareStatement("INSERT INTO veiculos_cadastrados " +
+                        "(placa, tipo, categoria, tamanho_vaga) " +
+                        "VALUES (?, ?, ?, ?, ?)",
+                Statement.RETURN_GENERATED_KEYS);
+
+                st.setString(1, veiculo.getPlaca());
+                st.setString(2, veiculo.getTipo());
+                st.setString(3, veiculo.getCategoriaVeiculo());
+                st.setInt(4, veiculo.getTamanhoVaga());
+
+                int rowsAffected = st.executeUpdate();
+
+                if (rowsAffected > 0) {
+                    ResultSet rs = st.getGeneratedKeys();
+                    if (rs.next()) {
+                        int id = rs.getInt(1);
+                        veiculo.setIdVeiculo(id);
+                    }
+                    DB.closeResultSet(rs);
+                }
+            }
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        } finally {
+            DB.closeStatement(st);
+        }
+    }
+
+    @Override
     public void update(Veiculo obj) {
 
     }
@@ -147,7 +202,6 @@ public class VeiculoDaoJDBC implements VeiculoDao {
         }
     }
 
-
     @Override
     public Veiculo procurarPlacaCaminhao(String placa) {
         PreparedStatement st = null;
@@ -176,6 +230,32 @@ public class VeiculoDaoJDBC implements VeiculoDao {
             throw new DbException(e.getMessage());
         } finally {
             DB.closeResultSet(rs);
+            DB.closeStatement(st);
+        }
+    }
+
+    @Override
+    public void atualizarCaminhao(String placa, Integer numeroVaga) {
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        try {
+            st = conn.prepareStatement(
+                    "UPDATE veiculos_cadastrados SET numero_vaga = ? " +
+                            "WHERE LOWER(placa) = LOWER(?) AND categoria = 'CAMINHAO_ENTREGA'");
+
+            st.setInt(1, numeroVaga);
+            st.setString(2, placa);
+
+            int rowsAffected = st.executeUpdate();
+
+            if (rowsAffected == 0) {
+                System.out.println("Nenhum caminhão de entrega encontrado com a placa fornecida.");
+            } else {
+                System.out.println("Número da vaga atualizado com sucesso.");
+            }
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        } finally {
             DB.closeStatement(st);
         }
     }
