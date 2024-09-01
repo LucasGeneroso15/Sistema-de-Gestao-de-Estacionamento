@@ -34,14 +34,13 @@ Siga os passos abaixo para configurar o projeto no seu ambiente
  ```
 ## Tabelas Banco de Dados
 
-As tabelas do banco de dados foram criadas de acordo com anexo "tabelas_bd"
+As tabelas do banco de dados foram criadas de acordo com anexo "tabelas_bd.png" e "scripts_tabelas.md".
 
 ## Testes Aplicação
 
 Para a realização dos testes foi utilizado os scripts em sql de acordo com o anexo "scripts.md"
 
 No arquivo consta os scripts para a inserção de linhas na tabela "vagas".
-
 
 ### Contato
 
