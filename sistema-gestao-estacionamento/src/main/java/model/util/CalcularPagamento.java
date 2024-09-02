@@ -13,7 +13,7 @@ public class CalcularPagamento {
 
     private static final double TAXA_MENSALISTA = 250.00;
 
-    public static double calcularValor(Ticket ticket, String categoria) {
+    public static double calcularValor(Ticket ticket, String categoria, String tipoVeiculo) {
         String categoriaVeiculo = categoria;
         LocalDateTime horaEntrada = ticket.getHoraEntrada();
         LocalDateTime horaSaida = ticket.getHoraSaida();
@@ -27,8 +27,13 @@ public class CalcularPagamento {
         double valorPagar;
 
         switch (categoriaVeiculo.toUpperCase()) {
-            case "AVULSO":
+            case"AVULSO":
+
                 valorPagar = minutos * VALOR_MINUTO;
+
+                if(!tipoVeiculo.equalsIgnoreCase("MOTO")){
+                    valorPagar *= 2;
+                }
 
                 if (valorPagar < COBRANCA_MINIMA) {
                     valorPagar = COBRANCA_MINIMA;
