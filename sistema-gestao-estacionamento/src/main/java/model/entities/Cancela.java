@@ -202,7 +202,7 @@ public class Cancela {
                             ticket.setHoraSaida(horaSaida);
                             ticket.setCancelaSaida(numero);
 
-                            double valorPago = CalcularPagamento.calcularValor(ticket, v1.getCategoriaVeiculo());
+                            double valorPago = CalcularPagamento.calcularValor(ticket, v1.getCategoriaVeiculo(), v1.getTipo());
                             ticket.setValorPago(valorPago);
 
                             ticketDao.atualizarTicket(ticket);
